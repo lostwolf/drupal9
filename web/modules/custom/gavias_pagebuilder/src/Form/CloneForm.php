@@ -1,6 +1,7 @@
 <?php
 namespace Drupal\gavias_pagebuilder\Form;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -88,7 +89,7 @@ class CloneForm implements FormInterface {
         ->execute();
       \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
       \Drupal::messenger()->addMessage("Builder '{$form['title']['#value']}' has been clone");
-      $response = new \Symfony\Component\HttpFoundation\RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
+      $response = new RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
       $response->send();
     }  
   }

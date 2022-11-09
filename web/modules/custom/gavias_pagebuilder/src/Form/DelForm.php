@@ -1,5 +1,6 @@
 <?php
 namespace Drupal\gavias_pagebuilder\Form;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -75,7 +76,7 @@ class DelForm extends ConfirmFormBase  {
             ->execute();
     \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
     \Drupal::messenger()->addMessage("blockbuilder '#{$bid}' has been delete");
-    $response = new \Symfony\Component\HttpFoundation\RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
+    $response = new RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
     $response->send();
   }
 

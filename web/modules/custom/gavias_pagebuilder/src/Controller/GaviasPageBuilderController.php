@@ -5,6 +5,8 @@
  */
 namespace Drupal\gavias_pagebuilder\Controller;
 
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use  Drupal\Core\Cache\Cache;
 use Drupal\Core\Url;
 use Drupal\Core\Controller\ControllerBase;
@@ -57,7 +59,7 @@ class GaviasPageBuilderController extends ControllerBase {
 
     $page['#attached']['drupalSettings']['gavias_pagebuilder']['base_path'] = base_path();
 
-    $page['#attached']['drupalSettings']['gavias_pagebuilder']['path_modules'] = base_path()  . drupal_get_path('module', 'gavias_pagebuilder');
+    $page['#attached']['drupalSettings']['gavias_pagebuilder']['path_modules'] = base_path()  . \Drupal::service('extension.list.module')->getPath('gavias_pagebuilder');
 
     $url_redirect = '';
     
@@ -79,7 +81,7 @@ class GaviasPageBuilderController extends ControllerBase {
     
     ob_start();
 
-    include drupal_get_path('module', 'gavias_pagebuilder') . '/templates/backend/form.php';
+    include \Drupal::service('extension.list.module')->getPath('gavias_pagebuilder') . '/templates/backend/form.php';
 
     $content = ob_get_clean();
     $page['gcb-admin-form'] = array(
@@ -138,8 +140,8 @@ class GaviasPageBuilderController extends ControllerBase {
  
   public function gavias_pagebuilder_export_node($nid){
     if($nid){
-      $node = \Drupal\node\Entity\Node::load($nid);
-      if ($node instanceof \Drupal\node\NodeInterface) {
+      $node = Node::load($nid);
+      if ($node instanceof NodeInterface) {
         try {
           $data = $node->get('gva_pagebuilder_content')->value;
           $title = 'pagebuilder-' . $this->friendly_title($node->get('title')->value); 
@@ -163,8 +165,8 @@ class GaviasPageBuilderController extends ControllerBase {
       $langid = $_REQUEST['lang'];
       $changed = '';
       if($nid){
-        $node = \Drupal\node\Entity\Node::load($nid);
-        if ($node instanceof \Drupal\node\NodeInterface) {
+        $node = Node::load($nid);
+        if ($node instanceof NodeInterface) {
           try {
             $node_change = $node;
             if(!empty($langid)){

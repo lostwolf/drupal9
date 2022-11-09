@@ -1,4 +1,6 @@
 <?php
+use Drupal\Core\Render\Markup;
+use Drupal\node\Entity\Node;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Form\FormStateInterface;
@@ -8,7 +10,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Url;
 use Drupal\node\NodeForm;
 
-define( 'GAVIAS_PAGE_BUILDER_PATH', drupal_get_path('module', 'gavias_pagebuilder') );
+define( 'GAVIAS_PAGE_BUILDER_PATH', \Drupal::service('extension.list.module')->getPath('gavias_pagebuilder') );
 
 module_load_include('php','gavias_pagebuilder', 'includes/core/model');
 module_load_include('php','gavias_pagebuilder', 'includes/define');
@@ -32,8 +34,8 @@ function gavias_pagebuilder_theme_name(){
 }
 
 $theme_load_elements = gavias_pagebuilder_theme_name();
-if(file_exists(drupal_get_path('theme', $theme_load_elements['theme_name']) . '/gva_content_builder/_elements.php')){
-  require drupal_get_path('theme', $theme_load_elements['theme_name']) . '/gva_content_builder/_elements.php';
+if(file_exists(\Drupal::service('extension.list.theme')->getPath($theme_load_elements['theme_name']) . '/gva_content_builder/_elements.php')){
+  require \Drupal::service('extension.list.theme')->getPath($theme_load_elements['theme_name']) . '/gva_content_builder/_elements.php';
   $elements = [];
   if(function_exists('gavias_content_builder_set_elements')){
     $elements = gavias_content_builder_set_elements();
@@ -41,10 +43,10 @@ if(file_exists(drupal_get_path('theme', $theme_load_elements['theme_name']) . '/
   if($theme_load_elements['sub_theme']){ //If use sub theme
     foreach( $elements as $el ){
       $sc_path = '';
-      if(file_exists(drupal_get_path('theme', $theme_load_elements['sub_theme']) . '/gva_content_builder/' . $el . '.php')){
-        $sc_path = drupal_get_path('theme', $theme_load_elements['sub_theme']) . '/gva_content_builder/' . $el . '.php';
-      }elseif(file_exists(drupal_get_path('theme', $theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php')){
-        $sc_path = drupal_get_path('theme', $theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php';
+      if(file_exists(\Drupal::service('extension.list.theme')->getPath($theme_load_elements['sub_theme']) . '/gva_content_builder/' . $el . '.php')){
+        $sc_path = \Drupal::service('extension.list.theme')->getPath($theme_load_elements['sub_theme']) . '/gva_content_builder/' . $el . '.php';
+      }elseif(file_exists(\Drupal::service('extension.list.theme')->getPath($theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php')){
+        $sc_path = \Drupal::service('extension.list.theme')->getPath($theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php';
       }
       if($sc_path){
         require($sc_path);
@@ -52,8 +54,8 @@ if(file_exists(drupal_get_path('theme', $theme_load_elements['theme_name']) . '/
     }
   }else{
     foreach( $elements as $el ){ //if don't use sub theme
-      if(file_exists(drupal_get_path('theme', $theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php')){
-        $sc_path = drupal_get_path('theme', $theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php';
+      if(file_exists(\Drupal::service('extension.list.theme')->getPath($theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php')){
+        $sc_path = \Drupal::service('extension.list.theme')->getPath($theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php';
         require($sc_path);
       }
     }
@@ -66,7 +68,7 @@ function gavias_pagebuilder_load_el_fields(){
   if(function_exists('gavias_content_builder_set_elements')){
     $elements = gavias_content_builder_set_elements();
     foreach( $elements as $el ){
-      if(file_exists(drupal_get_path('theme', $theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php')){
+      if(file_exists(\Drupal::service('extension.list.theme')->getPath($theme_load_elements['theme_name']) . '/gva_content_builder/' . $el . '.php')){
         $_class = 'element_' . $el;
         if( class_exists($_class) ){
           $s = new $_class;
@@ -126,7 +128,7 @@ function gavias_pagebuilder_preprocess_blockbuilder(&$vars){
 	$vars['content'] = $params;
 }
 
-function gavias_pagebuilder_form_node_form_alter(&$form, \Drupal\Core\Form\FormStateInterface &$form_state, $form_id) {
+function gavias_pagebuilder_form_node_form_alter(&$form, FormStateInterface &$form_state, $form_id) {
 
   //Hidden gva_pagebuilder_content field
   $form['gva_pagebuilder_content']['#attributes']['class'][] = 'hidden';
@@ -166,7 +168,7 @@ function gavias_pagebuilder_form_node_form_alter(&$form, \Drupal\Core\Form\FormS
       $form['#attached']['drupalSettings']['gavias_pagebuilder']['element_fields'] = $el_fields;
       $form['#attached']['drupalSettings']['gavias_pagebuilder']['base_path'] = base_path();
       $form['#attached']['drupalSettings']['gavias_pagebuilder']['changed'] = isset($form['changed']['#default_value']) ? $form['changed']['#default_value'] : '';
-      $form['#attached']['drupalSettings']['gavias_pagebuilder']['path_modules'] = base_path()  . drupal_get_path('module', 'gavias_pagebuilder');
+      $form['#attached']['drupalSettings']['gavias_pagebuilder']['path_modules'] = base_path()  . \Drupal::service('extension.list.module')->getPath('gavias_pagebuilder');
       $form['#attached']['drupalSettings']['gavias_pagebuilder']['save_pagebuilder_node_url'] = Url::fromRoute('gavias_pagebuilder.admin.save_node')->toString();
       $form['#attached']['drupalSettings']['gavias_pagebuilder']['text_translate']['cancel'] = t('Cancel');
       $form['#attached']['drupalSettings']['gavias_pagebuilder']['text_translate']['update'] = t('Update');
@@ -179,13 +181,13 @@ function gavias_pagebuilder_form_node_form_alter(&$form, \Drupal\Core\Form\FormS
       $html_title_pagebuilder .= '</div>';
       $form['gva_pagebuilder_enable_markup'] = array(
         '#type' => 'markup',
-        '#markup' => \Drupal\Core\Render\Markup::create($html_title_pagebuilder),
+        '#markup' => Markup::create($html_title_pagebuilder),
         '#weight' => 98
       );
 
       $form['gva_pagebuilder_markup'] = array(
         '#type' => 'markup',
-        '#markup' => \Drupal\Core\Render\Markup::create(gavias_pagebuilder_field_markup()),
+        '#markup' => Markup::create(gavias_pagebuilder_field_markup()),
         '#weight' => 99
         //'#allowed_tags' => array('a', 'div', 'span', 'text')
       );
@@ -200,7 +202,7 @@ function gavias_pagebuilder_field_markup(){
     $node_id = 0;
     $node_language = \Drupal::languageManager()->getCurrentLanguage()->getId();
     if (isset($path_args[1]) && isset($path_args[2]) && ($path_args[1] == 'node') && (is_numeric($path_args[2]))) {
-      $node = \Drupal\node\Entity\Node::load($path_args[2]);
+      $node = Node::load($path_args[2]);
       if($node->id()){
         $node_id = $node->id();
       }
@@ -309,7 +311,7 @@ function gavias_pagebuilder_form_alter(&$form, FormStateInterface $form_state) {
       $enable_quick_save = in_array('edit', $path_args) && !in_array('add', $path_args);
 
       if (isset($path_args[1]) && isset($path_args[2]) && ($path_args[1] == 'node') && (is_numeric($path_args[2]))) {
-        $node = \Drupal\node\Entity\Node::load($path_args[2]);
+        $node = Node::load($path_args[2]);
         if($node->id()){
           $node_id = $node->id();
         }
@@ -318,7 +320,7 @@ function gavias_pagebuilder_form_alter(&$form, FormStateInterface $form_state) {
       if($enable_quick_save & $node_id){
         $form['actions']['gva_pagebuilder_btn_save'] = [
           '#type' => 'markup',
-          '#markup' => \Drupal\Core\Render\Markup::create('<input value="Quick Save Page Builder" type="button" id="gva-pagebuilder-btn-save" class="button" />'),
+          '#markup' => Markup::create('<input value="Quick Save Page Builder" type="button" id="gva-pagebuilder-btn-save" class="button" />'),
           '#name' => 'gva_pagebuilder_btn_save',
           '#weight' => 1,
         ];
@@ -356,7 +358,7 @@ function gavias_pagebuilder_preprocess_node(&$variables){
   }
 
   $variables['content']['pagebuilder_content'] = array(
-    '#markup' => \Drupal\Core\Render\Markup::create($html)
+    '#markup' => Markup::create($html)
   );
 
 }

@@ -1,4 +1,5 @@
 <?php
+use Drupal\block\Entity\Block;
 function gavias_pagebuilder_variable_get($name, $default = NULL) {
   global $conf;
   return isset($conf[$name]) ? $conf[$name] : $default;
@@ -68,7 +69,7 @@ if(!function_exists('gavias_content_builder_get_blocks_options')){
 
 if(!function_exists('gavias_content_builder_render_block')){ 
   function gavias_content_builder_render_block($key) {
-    $block = \Drupal\block\Entity\Block::load($key);
+    $block = Block::load($key);
     if($block){
       $block_content = \Drupal::entityTypeManager()
         ->getViewBuilder('block')

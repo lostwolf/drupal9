@@ -1,6 +1,7 @@
 <?php
 namespace Drupal\gavias_pagebuilder\Form;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -78,7 +79,7 @@ class AddForm implements FormInterface {
 
       \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
       \Drupal::messenger()->addMessage("Builder '{$form['title']['#value']}' has been update");
-      $response = new \Symfony\Component\HttpFoundation\RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
+      $response = new RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
       $response->send();
     } else {
       $pid = \Drupal::database()->insert("gavias_pagebuilder")
@@ -90,7 +91,7 @@ class AddForm implements FormInterface {
         ->execute();
       \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
       \Drupal::messenger()->addMessage("Builder '{$form['title']['#value']}' has been created");
-      $response = new \Symfony\Component\HttpFoundation\RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
+      $response = new RedirectResponse(Url::fromRoute('gavias_pagebuilder.admin')->toString());
       $response->send();
     } 
   }

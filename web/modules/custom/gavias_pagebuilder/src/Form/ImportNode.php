@@ -1,6 +1,8 @@
 <?php
 namespace Drupal\gavias_pagebuilder\Form;
 
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseDialogCommand;
 use Drupal\Core\Ajax\HtmlCommand;
@@ -88,8 +90,8 @@ class ImportNode extends FormBase{
       $nid = $values['nid'];
     }
 
-    $node = \Drupal\node\Entity\Node::load($nid);
-    if ($node instanceof \Drupal\node\NodeInterface) {
+    $node = Node::load($nid);
+    if ($node instanceof NodeInterface) {
       try {
         $node->set('gva_pagebuilder_content', $params);
         $node->save();

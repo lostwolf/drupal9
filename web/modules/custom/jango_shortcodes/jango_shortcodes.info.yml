@@ -1,9 +1,0 @@
-name: Jango theme Shortcodes
-type: module
-description: 'All required shortcodes for Jango theme.'
-package: NikaDevs
-core_version_requirement: ^9 || ^10
-dependencies:
-  - nikadevs_cms
-  - simplify_menu
-
