@@ -1,0 +1,9 @@
+name: Jango theme Functions
+type: module
+description: 'All required functions for Jango theme.'
+package: NikaDevs
+core_version_requirement: ^9 || ^10
+dependencies:
+  - comment
+  - views
+#  - nikadevs_cms

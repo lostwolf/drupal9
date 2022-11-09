@@ -1,0 +1,8 @@
+name: NikaDevs Main Functions
+type: module
+description: All required functions for NikaDevs themes.
+package: "NikaDevs"
+core_version_requirement: ^9 || ^10
+dependencies:
+  - filter
+  - jquery_ui_dialog:jquery_ui_dialog
